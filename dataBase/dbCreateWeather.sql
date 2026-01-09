@@ -1,4 +1,6 @@
 -- Creación de tablas - visualización climatica
+-- Para habilitar PostGIS:
+CREATE EXTENSION IF NOT EXISTS postgis;
 
 -- 1. Usuarios
 
@@ -29,7 +31,8 @@ Create table PuntosMedicion (
 	Latitud DECIMAL (10,6),
 	Longitud DECIMAL (10,6),
 	TipoSensor VARCHAR(12),
-	Activo BOOLEAN DEFAULT TRUE
+	Activo BOOLEAN DEFAULT TRUE,
+	geom geometry(Point, 4326)
 	
 );
 
@@ -43,6 +46,15 @@ Create table Mediciones (
 	FOREIGN KEY (IdPunto) REFERENCES PuntosMedicion(IdPunto),
 	FOREIGN KEY (IdDataset) REFERENCES Datasets(IdDataset)
 
+);
+
+-- 5. AreasAfectadas
+CREATE TABLE AreasAfectadas (
+    IdArea SERIAL PRIMARY KEY,
+    Nombre VARCHAR(50),
+    Descripcion VARCHAR(150),
+    TipoRiesgo VARCHAR(30),
+    geom geometry(Polygon, 4326)
 );
 	
 	
