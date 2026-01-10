@@ -117,4 +117,33 @@ VALUES
 (5, 1, 19.8, '01-03-2025 12:00:00'),
 (6, 2, 420.6, '02-03-2025 11:00:00'),
 (7, 3, 0.21,  '03-03-2025 09:00:00');
+
+-- Convertir puntos
+UPDATE PuntosMedicion
+SET geom = ST_SetSRID(
+    ST_MakePoint(Longitud, Latitud),
+    4326
+)
+WHERE Latitud IS NOT NULL
+  AND Longitud IS NOT NULL;
+
+
+-- Zonas de riesgo
+
+INSERT INTO AreasAfectadas (Nombre, Descripcion, TipoRiesgo, geom)
+VALUES (
+  'Zona Riesgo Santiago',
+  'Zona de riesgo climático en Santiago Centro',
+  'Sequía',
+  ST_GeomFromText(
+    'POLYGON((
+      -70.75 -33.55,
+      -70.55 -33.55,
+      -70.55 -33.35,
+      -70.75 -33.35,
+      -70.75 -33.55
+    ))',
+    4326
+  )
+);
 	
