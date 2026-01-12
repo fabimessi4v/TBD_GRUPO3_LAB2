@@ -1,7 +1,6 @@
-package Grupo3TBD.ClimateViewer.entities;
+package Grupo3TBD.ClimateViewer.DTO;
 
-
-public class PuntoMedicion {
+public class PuntoMedicionDTO {
     private Long id;
     private String nombre;
     private double latitud;
@@ -9,6 +8,16 @@ public class PuntoMedicion {
     private String tipoSensor;
     private boolean activo;
     private String geom; // WKT
+
+    public PuntoMedicionDTO(Long id, String nombre, double latitud, double longitud, String tipoSensor, boolean activo, String geom) {
+        this.id = id;
+        this.nombre = nombre;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.tipoSensor = tipoSensor;
+        this.activo = activo;
+        this.geom = geom;
+    }
 
     public Long getId() {
         return id;

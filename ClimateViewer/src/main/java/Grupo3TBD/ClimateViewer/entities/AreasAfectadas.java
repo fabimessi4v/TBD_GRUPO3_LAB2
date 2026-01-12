@@ -1,15 +1,11 @@
 package Grupo3TBD.ClimateViewer.entities;
 
-
-import java.time.LocalDate;
-
-
-public class Dataset {
+public class AreasAfectadas {
     private Long id;
     private String nombre;
     private String descripcion;
-    private String fuente;
-    private LocalDate fechaActualizacion;
+    private String tipoRiesgo;
+    private String geom; // WKT del polígono
 
     public Long getId() {
         return id;
@@ -35,19 +31,19 @@ public class Dataset {
         this.descripcion = descripcion;
     }
 
-    public String getFuente() {
-        return fuente;
+    public String getTipoRiesgo() {
+        return tipoRiesgo;
     }
 
-    public void setFuente(String fuente) {
-        this.fuente = fuente;
+    public void setTipoRiesgo(String tipoRiesgo) {
+        this.tipoRiesgo = tipoRiesgo;
     }
 
-    public LocalDate getFechaActualizacion() {
-        return fechaActualizacion;
+    public String getGeom() {
+        return geom;
     }
 
-    public void setFechaActualizacion(LocalDate fechaActualizacion) {
-        this.fechaActualizacion = fechaActualizacion;
+    public void setGeom(String geom) {
+        this.geom = geom;
     }
 }

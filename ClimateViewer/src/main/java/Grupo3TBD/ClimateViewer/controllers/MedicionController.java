@@ -1,10 +1,9 @@
 package Grupo3TBD.ClimateViewer.controllers;
 
-import Grupo3TBD.ClimateViewer.DTO.AnomaliaTemperaturaDTO;
-import Grupo3TBD.ClimateViewer.DTO.EventoExtremoDTO;
-import Grupo3TBD.ClimateViewer.DTO.TendenciaMensualDTO;
-import Grupo3TBD.ClimateViewer.DTO.VariacionTemperaturaDTO;
+import Grupo3TBD.ClimateViewer.DTO.*;
+import Grupo3TBD.ClimateViewer.entities.Medicion;
 import Grupo3TBD.ClimateViewer.repository.MedicionRepository;
+import Grupo3TBD.ClimateViewer.servic.MedicionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +15,8 @@ public class MedicionController {
 
     @Autowired
     private MedicionRepository medicionRepository;
+    @Autowired
+    private MedicionService medicionService;
     /**
      * Obtiene la lista de eventos extremos de temperatura registrados en el último año.
      *
@@ -46,6 +47,43 @@ public class MedicionController {
     public List<VariacionTemperaturaDTO> topVariacion() {
         return medicionRepository.findTop10MayorVariacionTemperatura5Anios();
     }
+
+    // --- CREATE ---
+    @PostMapping
+    public void crearMedicion(@RequestBody Medicion medicion) {
+        medicionService.crearNuevaMedicion(medicion);
+    }
+
+    // --- READ paginado DTO ---
+    @GetMapping
+    public List<MedicionDTO> getPagedMedicionesDTO(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Long idDataset
+    ) {
+        return medicionService.getMedicionesPaginadasDTO(page, size, idDataset);
+    }
+    // --- UPDATE ---
+    @PutMapping("/{id}")
+    public void actualizarMedicion(@PathVariable Long id, @RequestBody Medicion medicion) {
+        medicion.setId(id);
+        medicionService.actualizarMedicion(medicion);
+    }
+
+    // --- DELETE ---
+    @DeleteMapping("/{id}")
+    public void eliminarMedicion(@PathVariable Long id) {
+        medicionService.eliminarMedicion(id);
+    }
+
+
+
+
+
+
+
+
+
 
 
 }

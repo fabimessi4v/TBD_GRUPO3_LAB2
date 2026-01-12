@@ -1,15 +1,21 @@
-package Grupo3TBD.ClimateViewer.entities;
-
+package Grupo3TBD.ClimateViewer.DTO;
 
 import java.time.LocalDate;
 
+public class DatasetDTO {
+    Long id;
+    String nombre;
+    String descripcion;
+    String fuente;
+    LocalDate fechaActualizacion;
 
-public class Dataset {
-    private Long id;
-    private String nombre;
-    private String descripcion;
-    private String fuente;
-    private LocalDate fechaActualizacion;
+    public DatasetDTO(Long id, String nombre, String descripcion, String fuente, LocalDate fechaActualizacion) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.fuente = fuente;
+        this.fechaActualizacion = fechaActualizacion;
+    }
 
     public Long getId() {
         return id;

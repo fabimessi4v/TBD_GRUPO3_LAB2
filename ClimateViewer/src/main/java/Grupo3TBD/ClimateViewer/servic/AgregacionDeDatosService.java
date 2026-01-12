@@ -13,9 +13,6 @@ public class AgregacionDeDatosService {
 
     @Autowired
     AgregacionDeDatosRepository agregacionDeDatosRepository;
-    /*public List<AgregacionDeDatosDTO> obtenerSerieTemporal(Integer idDataset, LocalDate fechaComienzo, LocalDate fechaTermino){
-        return agregacionDeDatosRepository.obtenerSerieTemporal(idDataset, fechaComienzo, fechaTermino);
-    }*/
 
     public List<AgregacionDeDatosDTO> obtenerSerieTemporal(Integer idDataset, LocalDate fechaComienzo, LocalDate fechaTermino) {
         agregacionDeDatosRepository.llamarProcedimiento(idDataset, fechaComienzo, fechaTermino);

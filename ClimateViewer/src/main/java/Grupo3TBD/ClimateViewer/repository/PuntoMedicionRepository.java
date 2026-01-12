@@ -2,8 +2,10 @@ package Grupo3TBD.ClimateViewer.repository;
 
 import Grupo3TBD.ClimateViewer.DTO.CorrelacionDTO;
 import Grupo3TBD.ClimateViewer.DTO.PuntoUltimaMedicionDTO;
+import Grupo3TBD.ClimateViewer.entities.PuntoMedicion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -17,6 +19,71 @@ public class PuntoMedicionRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+
+    // --- RowMapper ---
+    private final RowMapper<PuntoMedicion> rowMapper = (rs, rowNum) -> {
+        PuntoMedicion punto = new PuntoMedicion();
+        punto.setId(rs.getLong("IdPunto"));
+        punto.setNombre(rs.getString("Nombre"));
+        punto.setLatitud(rs.getDouble("Latitud"));
+        punto.setLongitud(rs.getDouble("Longitud"));
+        punto.setTipoSensor(rs.getString("TipoSensor"));
+        punto.setActivo(rs.getBoolean("Activo"));
+        punto.setGeom(rs.getString("geomWKT")); // WKT obtenido con ST_AsText
+        return punto;
+    };
+
+
+    // --- CREATE ---
+    public int save(PuntoMedicion punto) {
+        String sql = "INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom) " +
+                "VALUES (?, ?, ?, ?, ?, ST_SetSRID(ST_MakePoint(?, ?), 4326))";
+        return jdbcTemplate.update(
+                sql,
+                punto.getNombre(),
+                punto.getLatitud(),
+                punto.getLongitud(),
+                punto.getTipoSensor(),
+                punto.isActivo(),
+                punto.getLongitud(), // x = longitud
+                punto.getLatitud()   // y = latitud
+        );
+    }
+
+    // --- READ (list paginated) ---
+    public List<PuntoMedicion> findAllPaged(int page, int size, String nombreFiltro) {
+        int offset = page * size;
+        String sql = "SELECT IdPunto, Nombre, Latitud, Longitud, TipoSensor, Activo, ST_AsText(geom) AS geomWKT " +
+                "FROM PuntosMedicion " +
+                "WHERE Nombre LIKE ? " +
+                "LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, rowMapper, "%" + nombreFiltro + "%", size, offset);
+    }
+
+    // --- UPDATE ---
+    public int update(PuntoMedicion punto) {
+        String sql = "UPDATE PuntosMedicion SET Nombre = ?, Latitud = ?, Longitud = ?, TipoSensor = ?, Activo = ?, " +
+                "geom = ST_SetSRID(ST_MakePoint(?, ?), 4326) WHERE IdPunto = ?";
+        return jdbcTemplate.update(
+                sql,
+                punto.getNombre(),
+                punto.getLatitud(),
+                punto.getLongitud(),
+                punto.getTipoSensor(),
+                punto.isActivo(),
+                punto.getLongitud(), // x = longitud
+                punto.getLatitud(),  // y = latitud
+                punto.getId()
+        );
+    }
+
+    // --- DELETE ---
+    public int deleteById(Long id) {
+        String sql = "DELETE FROM PuntosMedicion WHERE IdPunto = ?";
+        return jdbcTemplate.update(sql, id);
+    }
+
     /**
      * Busca los puntos de medición de tipo "Sensor CO2" que se encuentran a menos de 50 km
      * de un punto de medición de temperatura específico.

@@ -2,8 +2,12 @@ package Grupo3TBD.ClimateViewer.repository;
 
 
 import Grupo3TBD.ClimateViewer.DTO.*;
+import Grupo3TBD.ClimateViewer.entities.Dataset;
+import Grupo3TBD.ClimateViewer.entities.Medicion;
+import Grupo3TBD.ClimateViewer.entities.PuntoMedicion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -14,6 +18,82 @@ public class MedicionRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    // Mapeador para convertir filas de la BD a objetos Java
+    private final RowMapper<Medicion> rowMapper = (rs, rowNum) -> {
+        Medicion medicion = new Medicion();
+        medicion.setId(rs.getLong("idmedicion"));
+        PuntoMedicion punto = new PuntoMedicion();
+        punto.setId(rs.getLong("idpunto"));
+        medicion.setPuntoMedicion(punto);
+
+        Dataset dataset = new Dataset();
+        dataset.setId(rs.getLong("iddataset"));
+        medicion.setDataset(dataset);
+
+        medicion.setValor(rs.getLong("valor"));
+        medicion.setFechahora(rs.getDate("fechahora").toLocalDate());
+        return medicion;
+    };
+
+    // --- CREATE ---
+    public int save(Medicion medicion) {
+        return jdbcTemplate.update(
+                "INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES (?, ?, ?, ?)",
+                medicion.getPuntoMedicion().getId(),
+                medicion.getDataset().getId(),
+                medicion.getValor(),
+                java.sql.Date.valueOf(medicion.getFechahora())
+        );
+    }
+
+    // --- READ (Con Paginación y Filtro por iddataset) ---
+    public List<Medicion> findAllPaged(int page, int size, Long idDatasetFiltro) {
+        int offset = page * size;
+        String sql = "SELECT * FROM mediciones WHERE iddataset = ? LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, rowMapper, idDatasetFiltro, size, offset);
+    }
+
+
+    // --- UPDATE ---
+    public int update(Medicion medicion) {
+        return jdbcTemplate.update(
+                "UPDATE mediciones SET idpunto = ?, iddataset = ?, valor = ?, fechahora = ? WHERE idmedicion = ?",
+                medicion.getPuntoMedicion().getId(),
+                medicion.getDataset().getId(),
+                medicion.getValor(),
+                java.sql.Date.valueOf(medicion.getFechahora()),
+                medicion.getId()
+        );
+    }
+
+    // --- DELETE ---
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("DELETE FROM mediciones WHERE idmedicion = ?", id);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Obtiene una lista de eventos extremos de temperatura registrados en el último año.
      *
