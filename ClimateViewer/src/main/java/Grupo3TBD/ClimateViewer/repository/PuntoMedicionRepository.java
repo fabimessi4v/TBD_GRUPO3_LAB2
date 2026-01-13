@@ -96,31 +96,17 @@ public class PuntoMedicionRepository {
 
     public List<CorrelacionDTO> findCO2CercanosPorPuntoTemperatura(Long idPuntoTemperatura) {
         String sql = """
-            SELECT
-                temp.idpunto AS idPuntoTemperatura,
-                co2.idpunto AS idPuntoCO2,
-                ROUND(
-                    (
-                        6371 * acos(
-                            cos(radians(temp.latitud)) * cos(radians(co2.latitud)) *
-                            cos(radians(co2.longitud) - radians(temp.longitud)) +
-                            sin(radians(temp.latitud)) * sin(radians(co2.latitud))
-                        )
-                    )::numeric, 2
-                ) AS distanciaKm
-            FROM puntosmedicion temp
-            JOIN puntosmedicion co2 ON co2.tiposensor = 'Sensor CO2'
-            WHERE temp.tiposensor = 'Termómetro'
-              AND temp.idpunto = ?
-              AND (
-                    6371 * acos(
-                        cos(radians(temp.latitud)) * cos(radians(co2.latitud)) *
-                        cos(radians(co2.longitud) - radians(temp.longitud)) +
-                        sin(radians(temp.latitud)) * sin(radians(co2.latitud))
-                    )
-                ) < 50
-              AND temp.idpunto <> co2.idpunto
-            """;
+        SELECT
+            temp.idpunto AS idPuntoTemperatura,
+            co2.idpunto AS idPuntoCO2,
+            ROUND((ST_Distance(temp.geom::geography, co2.geom::geography) / 1000)::numeric, 2) AS distanciaKm
+        FROM puntosmedicion temp
+        JOIN puntosmedicion co2 ON co2.tiposensor = 'Sensor CO2'
+        WHERE temp.tiposensor = 'Termómetro'
+          AND temp.idpunto = ?
+          AND temp.idpunto <> co2.idpunto
+          AND ST_DWithin(temp.geom::geography, co2.geom::geography, 50000)
+    """;
         // Ejecuta la consulta y mapea cada fila del resultado a un objeto CorrelacionDTO.
         return jdbcTemplate.query(sql, new Object[]{idPuntoTemperatura}, (rs, rowNum) -> mapCorrelacion(rs));
     }
