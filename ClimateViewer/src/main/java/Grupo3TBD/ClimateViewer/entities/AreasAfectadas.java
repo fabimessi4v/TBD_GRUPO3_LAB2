@@ -5,7 +5,7 @@ public class AreasAfectadas {
     private String nombre;
     private String descripcion;
     private String tipoRiesgo;
-    private String geom; // WKT del polígono
+    private String geom; // formato GeoJSON
 
     public Long getId() {
         return id;

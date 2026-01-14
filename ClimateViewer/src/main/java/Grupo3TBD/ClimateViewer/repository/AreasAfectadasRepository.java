@@ -19,7 +19,7 @@ public class AreasAfectadasRepository {
         a.setNombre(rs.getString("Nombre"));
         a.setDescripcion(rs.getString("Descripcion"));
         a.setTipoRiesgo(rs.getString("TipoRiesgo"));
-        a.setGeom(rs.getString("geomWKT")); // requerido: consulta con ST_AsText(geom) AS geomWKT
+        a.setGeom(rs.getString("geomGeoJSON")); // GeoJson
         return a;
     };
 
@@ -40,7 +40,7 @@ public class AreasAfectadasRepository {
     public List<AreasAfectadas> findAllPaged(int page, int size, String nombreFiltro) {
         int offset = page * size;
         String sql =
-                "SELECT IdArea, Nombre, Descripcion, TipoRiesgo, ST_AsText(geom) AS geomWKT " +
+                "SELECT IdArea, Nombre, Descripcion, TipoRiesgo, ST_AsGeoJSON(geom) AS geomGeoJSON " +
                         "FROM AreasAfectadas WHERE Nombre LIKE ? LIMIT ? OFFSET ?";
         return jdbcTemplate.query(sql, rowMapper, "%" + nombreFiltro + "%", size, offset);
     }
