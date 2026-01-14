@@ -20,7 +20,7 @@ const areas = ref([])
 const selectedArea = ref(null)
 const error = ref(null)
 
-// Color mapping for different risk types - NECESARIO para colorear polígonos y badges
+// Color mapping for different risk types
 const riskColors = {
   'Inundación': '#3b82f6',    // Blue
   'Bajo': '#4ade80',          // Green
@@ -33,18 +33,14 @@ const riskColors = {
 
 // Initialize map
 const initMap = () => {
-  console.log('Inicializando mapa...')
   try {
     // Create map centered on Chile
     map.value = L.map('map-container').setView([-33.4489, -70.6693], 6)
-    console.log('Mapa creado correctamente')
-
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19
     }).addTo(map.value)
-    console.log('Tiles agregados al mapa')
   } catch (err) {
     console.error('Error inicializando mapa:', err)
     error.value = 'Error al inicializar el mapa'
@@ -56,11 +52,8 @@ const loadAreas = async () => {
   try {
     loading.value = true
     error.value = null
-    console.log('Solicitando áreas afectadas del backend...')
     
     const response = await areasAfectadasService.getAll()
-    console.log('Respuesta del backend:', response.data)
-    console.log('Número de áreas recibidas:', response.data?.length || 0)
     
     areas.value = response.data
     
@@ -72,14 +65,10 @@ const loadAreas = async () => {
     error.value = 'Error al cargar las áreas afectadas: ' + (err.response?.data?.message || err.message)
   } finally {
     loading.value = false
-    console.log('Carga completada. Loading:', loading.value)
     
-    // CRÍTICO: Forzar recálculo de tamaño del mapa después de que se vuelva visible
-    // Esto soluciona el problema de demora en la carga
     if (map.value) {
       await nextTick() // Esperar a que v-show actualice el DOM
       map.value.invalidateSize()
-      console.log('Tamaño del mapa recalculado')
     }
   }
 }
@@ -91,8 +80,6 @@ const addPolygonsToMap = () => {
     return
   }
 
-  console.log('Agregando polígonos al mapa...')
-  console.log('Total de áreas a procesar:', areas.value.length)
 
   areas.value.forEach((area, index) => {
     console.log(`   Área ${index + 1}:`, {
@@ -106,17 +93,12 @@ const addPolygonsToMap = () => {
 
     if (area.geom) {
       try {
-        // El backend ahora devuelve GeoJSON como string
         let geojson
         
-        // Si es un string, intentar parsear como JSON (GeoJSON)
         if (typeof area.geom === 'string') {
-          // Primero intentar como JSON (caso más común ahora)
           try {
             geojson = JSON.parse(area.geom)
-            console.log(`GeoJSON parseado desde string`)
           } catch (jsonErr) {
-            // Si falla JSON, verificar si es WKT (fallback para compatibilidad)
             if (/^(POLYGON|POINT|LINESTRING|MULTIPOLYGON)/i.test(area.geom)) {
               console.log(`Detectado WKT, convirtiendo a GeoJSON...`)
               geojson = wktToGeoJSON(area.geom)
@@ -235,7 +217,6 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-  console.log('🧹 Limpiando mapa...')
   if (map.value) {
     map.value.remove()
   }
