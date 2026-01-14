@@ -21,10 +21,10 @@ VALUES
 ('Estación Valparaíso', -33.0472, -71.6127, 'Sensor CO2', TRUE),
 ('Estación Antofagasta', -23.6500, -70.4000, 'Mareógrafo', TRUE),
 ('Estación Punta Arenas', -53.1638, -70.9171, 'Termómetro', TRUE),
-('Estación Plaza de Armas', -33.45, -70.6667, 'Sensor CO2', TRUE);
+('Estación Plaza de Armas', -33.45, -70.6667, 'Sensor CO2', TRUE),
 ('CO2 A', -34.650000, -58.400000, 'Sensor CO2', TRUE),
 ('CO2 B', -34.700000, -58.450000, 'Sensor CO2', TRUE),
-('Temp BA', -34.603722, -58.381592, 'Termómetro', TRU
+('Temp BA', -34.603722, -58.381592, 'Termómetro', TRUE);
 
 -- 4 Mediciones
 
