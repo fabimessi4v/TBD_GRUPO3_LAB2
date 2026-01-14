@@ -71,6 +71,12 @@ const routes = [
         path: '/variacion-temperatura',
         name: 'VariacionTemperatura',
         component: () => import('@/views/pages/VariacionDeTemperatura.vue')
+      },
+
+      {
+        path: 'deteccion-zonas-riesgo',
+        name: 'DeteccionZonasRiesgo',
+        component: () => import('@/views/pages/DeteccionZonasRiesgo.vue')
       }
     ]
   }

@@ -60,6 +60,14 @@ export default [
     name: 'AnomaliaTemperatura',
     to: '/anomalia-temperatura',
     icon: 'cil-ChartLine',
+  },
+
+  {
+    component: 'CNavItem',
+    name: 'Zonas de riesgo',
+    to: '/deteccion-zonas-riesgo',
+    icon: 'cil-search',
+    badge: { color: 'primary' },
   }
 
 

@@ -33,20 +33,20 @@ const riskColors = {
 
 // Initialize map
 const initMap = () => {
-  console.log('🗺️ Inicializando mapa...')
+  console.log('Inicializando mapa...')
   try {
     // Create map centered on Chile
     map.value = L.map('map-container').setView([-33.4489, -70.6693], 6)
-    console.log('✅ Mapa creado correctamente')
+    console.log('Mapa creado correctamente')
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19
     }).addTo(map.value)
-    console.log('✅ Tiles agregados al mapa')
+    console.log('Tiles agregados al mapa')
   } catch (err) {
-    console.error('❌ Error inicializando mapa:', err)
+    console.error('Error inicializando mapa:', err)
     error.value = 'Error al inicializar el mapa'
   }
 }
@@ -56,30 +56,30 @@ const loadAreas = async () => {
   try {
     loading.value = true
     error.value = null
-    console.log('📡 Solicitando áreas afectadas del backend...')
+    console.log('Solicitando áreas afectadas del backend...')
     
     const response = await areasAfectadasService.getAll()
-    console.log('✅ Respuesta del backend:', response.data)
-    console.log('📊 Número de áreas recibidas:', response.data?.length || 0)
+    console.log('Respuesta del backend:', response.data)
+    console.log('Número de áreas recibidas:', response.data?.length || 0)
     
     areas.value = response.data
     
     // Add polygons to map
     addPolygonsToMap()
   } catch (err) {
-    console.error('❌ Error loading areas:', err)
-    console.error('📋 Error details:', err.response?.data || err.message)
+    console.error('Error loading areas:', err)
+    console.error('Error details:', err.response?.data || err.message)
     error.value = 'Error al cargar las áreas afectadas: ' + (err.response?.data?.message || err.message)
   } finally {
     loading.value = false
-    console.log('🏁 Carga completada. Loading:', loading.value)
+    console.log('Carga completada. Loading:', loading.value)
     
     // CRÍTICO: Forzar recálculo de tamaño del mapa después de que se vuelva visible
     // Esto soluciona el problema de demora en la carga
     if (map.value) {
       await nextTick() // Esperar a que v-show actualice el DOM
       map.value.invalidateSize()
-      console.log('🔄 Tamaño del mapa recalculado')
+      console.log('Tamaño del mapa recalculado')
     }
   }
 }
@@ -87,12 +87,12 @@ const loadAreas = async () => {
 // Add polygons to map
 const addPolygonsToMap = () => {
   if (!map.value) {
-    console.warn('⚠️ Mapa no disponible para agregar polígonos')
+    console.warn('Mapa no disponible para agregar polígonos')
     return
   }
 
-  console.log('🔷 Agregando polígonos al mapa...')
-  console.log('📍 Total de áreas a procesar:', areas.value.length)
+  console.log('Agregando polígonos al mapa...')
+  console.log('Total de áreas a procesar:', areas.value.length)
 
   areas.value.forEach((area, index) => {
     console.log(`   Área ${index + 1}:`, {
@@ -114,11 +114,11 @@ const addPolygonsToMap = () => {
           // Primero intentar como JSON (caso más común ahora)
           try {
             geojson = JSON.parse(area.geom)
-            console.log(`   ✅ GeoJSON parseado desde string`)
+            console.log(`GeoJSON parseado desde string`)
           } catch (jsonErr) {
             // Si falla JSON, verificar si es WKT (fallback para compatibilidad)
             if (/^(POLYGON|POINT|LINESTRING|MULTIPOLYGON)/i.test(area.geom)) {
-              console.log(`   🔄 Detectado WKT, convirtiendo a GeoJSON...`)
+              console.log(`Detectado WKT, convirtiendo a GeoJSON...`)
               geojson = wktToGeoJSON(area.geom)
               if (!geojson) {
                 throw new Error('No se pudo convertir WKT a GeoJSON')
@@ -131,14 +131,14 @@ const addPolygonsToMap = () => {
         // Si ya es un objeto, usar directamente
         else if (typeof area.geom === 'object') {
           geojson = area.geom
-          console.log(`   ✅ GeoJSON directo (objeto)`)
+          console.log(`GeoJSON directo (objeto)`)
         } else {
           throw new Error('Tipo de geometría no soportado')
         }
 
         // Determine color based on risk type
         const color = riskColors[area.tipoRiesgo] || '#6B7280'
-        console.log(`   🎨 Color asignado: ${color} para riesgo: ${area.tipoRiesgo}`)
+        console.log(`Color asignado: ${color} para riesgo: ${area.tipoRiesgo}`)
 
         // Create polygon layer
         const polygon = L.geoJSON(geojson, {
@@ -158,36 +158,36 @@ const addPolygonsToMap = () => {
 
         // Add to map
         polygon.addTo(map.value)
-        console.log(`   ✅ Polígono agregado al mapa`)
+        console.log(`Polígono agregado al mapa`)
 
         // Store reference
         area.layer = polygon
       } catch (err) {
-        console.error(`   ❌ Error procesando área ${area.id}:`, err)
-        console.error(`   📋 Geometría problemática:`, area.geom)
+        console.error(`Error procesando área ${area.id}:`, err)
+        console.error(`Geometría problemática:`, area.geom)
       }
     } else {
-      console.warn(`   ⚠️ Área sin geometría (geom es null/undefined)`)
+      console.warn(`Área sin geometría (geom es null/undefined)`)
     }
   })
 
   // Fit map to show all polygons if we have areas
   if (areas.value.length > 0) {
     const layersWithGeom = areas.value.filter(a => a.layer).map(a => a.layer)
-    console.log(`🗺️ Ajustando vista del mapa para ${layersWithGeom.length} polígonos`)
+    console.log(`Ajustando vista del mapa para ${layersWithGeom.length} polígonos`)
     
     if (layersWithGeom.length > 0) {
       const group = new L.featureGroup(layersWithGeom)
       if (group.getBounds().isValid()) {
         map.value.fitBounds(group.getBounds(), { padding: [50, 50] })
-        console.log('✅ Vista del mapa ajustada a los límites de los polígonos')
+        console.log('Vista del mapa ajustada a los límites de los polígonos')
       } else {
-        console.warn('⚠️ Límites del grupo no son válidos')
+        console.warn('Límites del grupo no son válidos')
       }
     }
   }
   
-  console.log('🏁 Proceso de agregar polígonos completado')
+  console.log('Proceso de agregar polígonos completado')
 }
 
 // Select an area
@@ -213,7 +213,7 @@ const selectArea = (area) => {
 
 // Lifecycle hooks
 onMounted(async () => {
-  console.log('🚀 Component mounted')
+  console.log('Component mounted')
   
   // Usar nextTick es más eficiente que setTimeout
   await nextTick()
@@ -221,7 +221,7 @@ onMounted(async () => {
   // Verificar que el contenedor existe
   const container = document.getElementById('map-container')
   if (!container) {
-    console.error('❌ Contenedor del mapa no encontrado')
+    console.error('Contenedor del mapa no encontrado')
     error.value = 'No se pudo encontrar el contenedor del mapa'
     loading.value = false
     return
