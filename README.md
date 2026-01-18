@@ -47,6 +47,7 @@ El servidor backend se ejecutará en:
 ```bash
 cd frontend
 npm install
+npm install leaflet
 npm run dev
 ```
 
