@@ -24,7 +24,7 @@ const routes = [
         name: 'Dashboard',
         component: () => import('@/views/dashboard/Dashboard.vue')
       },
-      { 
+      {
         path: 'seleccion',
         name: 'Seleccion',
         component: () => import('@/views/pages/Seleccion.vue')
@@ -59,7 +59,7 @@ const routes = [
         name: 'Georreferencia',
         component: () => import('@/views/pages/Georreferencia.vue')
       },
-      
+
       {
         path: '/anomalia-temperatura',
         name: 'AnomaliaTemperatura',
@@ -77,7 +77,13 @@ const routes = [
         path: 'deteccion-zonas-riesgo',
         name: 'DeteccionZonasRiesgo',
         component: () => import('@/views/pages/DeteccionZonasRiesgo.vue')
-      }
+      },
+
+     {
+         path: '/interpolacion-datos',
+         name: 'InterpolacionDatos',
+         component: () => import('@/views/pages/InterpolacionDeDatos.vue')
+     }
     ]
   }
 

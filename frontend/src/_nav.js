@@ -68,7 +68,14 @@ export default [
     to: '/deteccion-zonas-riesgo',
     icon: 'cil-search',
     badge: { color: 'primary' },
-  }
+  },
+
+ {
+     component: 'CNavItem',
+     name: 'Interpolacion Datos',
+     to: '/interpolacion-datos',
+     icon: 'cil-ChartLine',
+ }
 
 
 ]
