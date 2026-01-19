@@ -67,7 +67,21 @@ public class WebSecurityConfig {
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/auth/**", "/api/agregaciondedatos/**", "/api/mediciones/**", "/api/puntos/correlacion","/api/resumensemanal/**"  ).permitAll()
+                        auth
+                                //  AUTH PUBLICO
+                                .requestMatchers(
+                                        "/api/auth/**"
+                                ).permitAll()
+
+                                // SOLO ADMIN
+                                .requestMatchers(
+                                        "/api/agregaciondedatos/**",
+                                        "/api/mediciones/**",
+                                        "/api/puntos/correlacion",
+                                        "/api/resumensemanal/**"
+                                ).hasRole("ADMIN")
+
+                                //  RESTO PROTEGIDO (AUTENTICADO)
                                 .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

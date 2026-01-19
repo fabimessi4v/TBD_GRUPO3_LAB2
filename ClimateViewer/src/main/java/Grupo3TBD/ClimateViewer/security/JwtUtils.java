@@ -1,6 +1,7 @@
 package Grupo3TBD.ClimateViewer.security;
 
 import Grupo3TBD.ClimateViewer.security.services.UserDetailsImpl;
+import Grupo3TBD.ClimateViewer.security.services.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -8,10 +9,12 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,7 @@ import org.slf4j.LoggerFactory;
 public class JwtUtils {
     // Logger para mostrar mensajes en consola relacionados con JWT.
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     // Se obtiene el valor de la clave secreta para firmar el JWT desde application.properties.
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -30,23 +34,38 @@ public class JwtUtils {
     // Duración del refresh token (en milisegundos).
     @Value("${jwt.refreshExpiration}")
     private int refreshTokenDurationMs;
+
+    public JwtUtils(UserDetailsServiceImpl userDetailsServiceImpl) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    }
+
     // Genera un JWT usando la información de autenticación (usuario autenticado).
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
+        List<String> roles = userPrincipal.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
         return Jwts.builder()
                 .subject(userPrincipal.getUsername())
+                .claim("roles", roles)
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSigningKey())
                 .compact();
     }
     // Otra sobrecarga del método para generar un JWT solo a partir del nombre de usuario.
-    public String generateJwtToken(
-            String username
-    ) {
+    public String generateJwtToken(String username) {
+        // Obtén el UserDetailsImpl del usuario (esto usualmente es a través de tu servicio que implementa UserDetailsService)
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) userDetailsServiceImpl.loadUserByUsername(username);
+
+        // Extrae los roles/authorities
+        List<String> roles = userPrincipal.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
         return Jwts.builder()
-                .subject(username)
+                .subject(userPrincipal.getUsername())
+                .claim("roles", roles) // <--- Ahora sí agrega los roles al token
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(getSigningKey())

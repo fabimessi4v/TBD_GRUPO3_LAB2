@@ -2,9 +2,11 @@ package Grupo3TBD.ClimateViewer.security.services;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import Grupo3TBD.ClimateViewer.entities.Usuario;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -36,13 +38,16 @@ public class UserDetailsImpl implements UserDetails {
 
     // Método estático para construir la instancia desde Usuario
     public static UserDetailsImpl build(Usuario usuario) {
+        List<GrantedAuthority> authorities = Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + usuario.getRol().toUpperCase())
+        );
         return new UserDetailsImpl(
                 usuario.getId(),
                 usuario.getEmail(),
                 usuario.getEmail(),
                 usuario.getNombre(),
                 usuario.getConHash(),
-                Collections.emptyList()
+                authorities
         );
     }
 

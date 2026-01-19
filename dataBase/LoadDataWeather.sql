@@ -147,6 +147,50 @@ VALUES (
       -70.75 -33.55
     ))',
     4326
+  ),
+  (
+  'Zona Riesgo Incendio',
+  'Área con alta vegetación seca',
+  'Incendio',
+  ST_GeomFromText(
+    'POLYGON((
+      -71.000 -33.000,
+      -70.980 -33.010,
+      -70.970 -33.030,
+      -71.010 -33.040,
+      -71.000 -33.000
+    ))',
+    4326
+  )
+),
+(
+  'Zona Deslizamiento',
+  'Pendiente inestable en temporada de lluvias',
+  'Deslizamiento',
+  ST_GeomFromText(
+    'POLYGON((
+      -70.720 -33.520,
+      -70.700 -33.500,
+      -70.680 -33.530,
+      -70.700 -33.550,
+      -70.720 -33.520
+    ))',
+    4326
+  )
+),
+(
+  'Zona Aluvión',
+  'Cauce seco con historial de aluviones',
+  'Aluvión',
+  ST_GeomFromText(
+    'POLYGON((
+      -70.800 -33.600,
+      -70.780 -33.590,
+      -70.770 -33.620,
+      -70.790 -33.630,
+      -70.800 -33.600
+    ))',
+    4326
   )
 );
 	

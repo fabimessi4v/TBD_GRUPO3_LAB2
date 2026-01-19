@@ -44,19 +44,20 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue' // Importa watch para observar cambios
 import { CRow, CCol, CCard, CCardBody, CCardHeader, CFormSelect, CFormLabel, CTable, CTableHead, CTableRow, CTableHeaderCell, CTableBody, CTableDataCell } from '@coreui/vue'
-
+import apiClient from '@/services/axios'
 const ids = [1, 2, 3, 4, 5] // Puedes cambiar los ids disponibles aquí
 const selectedId = ref(ids[0]) // ID seleccionado
 const correlaciones = ref([]) // Datos de correlaciones
 const baseUrl = import.meta.env.VITE_BASE_URL // URL base de la API
 
-const fetchCorrelacion = async () => { // Función para obtener correlaciones
+const fetchCorrelacion = async () => {
   try {
-    const res = await fetch(`${baseUrl}/api/puntos/correlacion?idPuntoTemperatura=${selectedId.value}`) // Llama a la API con el ID seleccionado
-    if (!res.ok) throw new Error('Error en la petición') // Manejo de errores
-    correlaciones.value = await res.json() // Almacena la respuesta en correlaciones
+    const res = await apiClient.get(`/puntos/correlacion`, {
+      params: { idPuntoTemperatura: selectedId.value }
+    })
+    correlaciones.value = res.data
   } catch (e) {
-    correlaciones.value = [] // Si hay un error, establece correlaciones como un array vacío
+    correlaciones.value = []
   }
 }
 
