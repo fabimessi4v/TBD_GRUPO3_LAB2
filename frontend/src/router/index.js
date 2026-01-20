@@ -83,13 +83,8 @@ const routes = [
          path: '/interpolacion-datos',
          name: 'InterpolacionDatos',
          component: () => import('@/views/pages/InterpolacionDeDatos.vue')
-     },
-      
-     {
-        path: '/puntos-invalidos',
-        name: 'PuntosInvalidos',
-        component: () => import('@/views/PuntosInvalidos.vue')
-      }   
+     }
+    
     ]
   }
 
