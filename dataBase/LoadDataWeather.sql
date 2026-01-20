@@ -130,11 +130,10 @@ SET geom = ST_SetSRID(
 WHERE Latitud IS NOT NULL
   AND Longitud IS NOT NULL;
 
-
 -- Zonas de riesgo
-
 INSERT INTO AreasAfectadas (Nombre, Descripcion, TipoRiesgo, geom)
-VALUES (
+VALUES
+(
   'Zona Riesgo Santiago',
   'Zona de riesgo climático en Santiago Centro',
   'Sequía',
@@ -147,8 +146,9 @@ VALUES (
       -70.75 -33.55
     ))',
     4326
-  ),
-  (
+  )
+),
+(
   'Zona Riesgo Incendio',
   'Área con alta vegetación seca',
   'Incendio',
@@ -193,4 +193,5 @@ VALUES (
     4326
   )
 );
+
 	
