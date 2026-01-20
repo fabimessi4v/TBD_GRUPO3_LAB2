@@ -88,7 +88,7 @@ import java.util.Optional;
             usuario.setEmail(signUpRequest.getEmail());
             // Guarda la contraseña encriptada
             usuario.setConHash(encoder.encode(signUpRequest.getPassword()));
-            usuario.setRol("usuario"); // rol por defecto
+            usuario.setRol(signUpRequest.getRole());
             usuario.setFechaRegistro(LocalDate.now());
             // Guarda el usuario en la base de datos
             usuarioRepository.save(usuario);
