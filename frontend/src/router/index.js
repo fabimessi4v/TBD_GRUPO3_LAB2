@@ -84,7 +84,6 @@ const routes = [
          name: 'InterpolacionDatos',
          component: () => import('@/views/pages/InterpolacionDeDatos.vue')
      }
-      
     
     ]
   }
