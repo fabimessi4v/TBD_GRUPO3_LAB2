@@ -26,6 +26,66 @@ VALUES
 ('CO2 B', -34.700000, -58.450000, 'Sensor CO2', TRUE),
 ('Temp BA', -34.603722, -58.381592, 'Termómetro', TRUE);
 
+-- Dentro de "Zona Riesgo Incendio"
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES
+(
+  'Quebrada La Dormida',
+  -33.0200,
+  -70.9950,
+  'Sensor CO2',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(-70.9950, -33.0200), 4326)
+),
+(
+  'Chacabuco',
+  -33.0350,
+  -70.9900,
+  'Termómetro',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(-70.9900, -33.0350), 4326)
+);
+
+-- Dentro de "Zona Deslizamiento"
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES
+(
+  'Ladera San Ramon',
+  -33.5300,
+  -70.7050,
+  'Mareógrafo',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(-70.7050, -33.5300), 4326)
+),
+(
+  'Quebrada Macul',
+  -33.5450,
+  -70.7000,
+  'Termómetro',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(-70.7000, -33.5450), 4326)
+);
+
+-- Dentro de "Zona Aluvión"
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES
+(
+  'Cauce San Jose de Maipo',
+  -33.6100,
+  -70.7850,
+  'Sensor CO2',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(-70.7850, -33.6100), 4326)
+),
+(
+  'Mareografo Bahia de Valparaiso',
+  -33.6250,
+  -70.7900,
+  'Mareógrafo',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(-70.7900, -33.6250), 4326)
+);
+
 -- 4 Mediciones
 
 -- Dataset 1: Temperatura (°C)
@@ -194,10 +254,7 @@ VALUES
   )
 );
 
-
--- =====================================================
--- PUNTOS DE MEDICIÓN INVÁLIDOS (para pruebas)
--- =====================================================
+-- PUNTOS DE MEDICIÓN INVÁLIDOS
 
 -- 1 Punto sin coordenadas ni geometría (geom = NULL)
 INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
@@ -231,6 +288,5 @@ VALUES (
   TRUE,
   ST_SetSRID(ST_MakePoint(-70.66, -33.45), 0) 
 );
-
 
 	
