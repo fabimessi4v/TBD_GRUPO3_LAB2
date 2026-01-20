@@ -56,6 +56,16 @@ CREATE TABLE AreasAfectadas (
     TipoRiesgo VARCHAR(30),
     geom geometry(Polygon, 4326)
 );
+
+-- View de puntos de medición válidos
+
+CREATE OR REPLACE VIEW puntosmedicion_validos AS
+SELECT *
+FROM puntosmedicion
+WHERE geom IS NOT NULL
+  AND ST_IsValid(geom)
+  AND NOT (ST_X(geom)=0 AND ST_Y(geom)=0);
+
 	
 	
 	

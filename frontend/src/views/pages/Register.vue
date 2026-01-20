@@ -58,8 +58,8 @@
 
                 <CInputGroup class="mb-4">
                   <CInputGroupText>Rol</CInputGroupText>
-                  <CFormSelect v-model="rol">
-                    <option value="user">user</option>
+                  <CFormSelect v-model="role">
+                    <option value="usuario">user</option>
                     <option value="admin">admin</option>
                   </CFormSelect>
                 </CInputGroup>
@@ -91,17 +91,18 @@ const apellido = ref('')
 const email = ref('')
 const password = ref('')
 const password2 = ref('')
-const rol = ref('user')
+const role = ref('usuario')
 const loading = ref(false)
 const error = ref(null)
 /* Función submit ejecutada al enviar el formulario */
 async function submit() {
   error.value = null
     // Validaciones básicas de campos requeridos
-  if (!nombre.value || !apellido.value || !email.value || !password.value || !rol.value) {
+  if (!nombre.value || !apellido.value || !email.value || !password.value || !role.value) {
     error.value = 'Todos los campos son obligatorios'
     return
   }
+  console.log(role.value)
     // Validación de coincidencia de contraseñas
   if (password.value !== password2.value) {
     error.value = 'Las contraseñas no coinciden'
@@ -115,8 +116,9 @@ async function submit() {
       password: password.value,
       nombre: nombre.value,
       apellido: apellido.value,
-      rol: rol.value,
+      role: role.value,
     })
+    console.log(role.value)
     // redirige al login después de registrar
     router.push({ path: '/' })
   } catch (err) {
