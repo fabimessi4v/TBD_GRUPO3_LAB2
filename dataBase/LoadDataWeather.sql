@@ -194,4 +194,43 @@ VALUES
   )
 );
 
+
+-- =====================================================
+-- PUNTOS DE MEDICIÓN INVÁLIDOS (para pruebas)
+-- =====================================================
+
+-- 1 Punto sin coordenadas ni geometría (geom = NULL)
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES (
+  'Sensor Invalido Sin Geom',
+  NULL,
+  NULL,
+  'Termómetro',
+  TRUE,
+  NULL
+);
+
+-- 2 Punto con coordenadas inválidas (0,0)
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES (
+  'Sensor Invalido 0 0',
+  0,
+  0,
+  'Sensor CO2',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(0, 0), 4326)
+);
+
+-- 3 Punto con geometría inválida (SRID incorrecto)
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES (
+  'Sensor Invalido SRID',
+  -33.45,
+  -70.66,
+  'Mareógrafo',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(-70.66, -33.45), 0) 
+);
+
+
 	
