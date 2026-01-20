@@ -1,2 +1,7 @@
-package Grupo3TBD.ClimateViewer.DTO;public class PuntoValidoDTO {
-}
+package Grupo3TBD.ClimateViewer.DTO;
+
+public record PuntoInvalidoDTO(
+        int idpunto,
+        String nombre,
+        String estado
+) {}

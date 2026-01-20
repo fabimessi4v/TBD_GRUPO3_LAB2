@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import puntosService from '@/services/puntoMedicion'
 import areasAfectadasService from '@/services/areasAfectadas'
 import {
   CCard,
@@ -19,6 +20,10 @@ const loading = ref(true)
 const areas = ref([])
 const selectedArea = ref(null)
 const error = ref(null)
+const invalidos = ref([])
+const loadingInvalidos = ref(false)
+const errorInvalidos = ref(null)
+
 
 // Color mapping for different risk types
 const riskColors = {
@@ -72,6 +77,26 @@ const loadAreas = async () => {
     }
   }
 }
+
+const loadInvalidos = async () => {
+  try {
+    loadingInvalidos.value = true
+    errorInvalidos.value = null
+
+    const response = await puntosService.getInvalidos()
+    invalidos.value = response.data
+  } catch (err) {
+    console.error('Error loading invalid points:', err)
+    errorInvalidos.value =
+      err.response?.data?.mensaje ||
+      err.response?.data?.message ||
+      err.message ||
+      'Error al cargar puntos inválidos'
+  } finally {
+    loadingInvalidos.value = false
+  }
+}
+
 
 // Add polygons to map
 const addPolygonsToMap = () => {
@@ -214,6 +239,7 @@ onMounted(async () => {
   
   // Cargar áreas en paralelo (no bloquear la UI)
   loadAreas()
+  loadInvalidos()
 })
 
 onUnmounted(() => {
@@ -231,7 +257,7 @@ onUnmounted(() => {
         <CCard class="mb-4">
           <CCardBody>
             <h4 class="card-title mb-3">Mapa de Áreas Afectadas</h4>
-            
+
             <!-- Loading spinner -->
             <div v-if="loading" class="text-center my-5">
               <CSpinner color="primary" />
@@ -244,8 +270,8 @@ onUnmounted(() => {
             </div>
 
             <!-- Map container - siempre renderizado para que Leaflet pueda inicializarse -->
-            <div 
-              id="map-container" 
+            <div
+              id="map-container"
               style="height: 500px; border-radius: 8px; z-index: 1;"
               v-show="!loading && !error"
             ></div>
@@ -255,6 +281,7 @@ onUnmounted(() => {
 
       <!-- Side panel: Area information (4 of 12 columns) -->
       <CCol :md="4" class="order-md-2">
+        <!-- Card 1: Panel de Información (tu card original) -->
         <CCard class="mb-4">
           <CCardHeader>
             <strong>Panel de Información</strong>
@@ -271,20 +298,20 @@ onUnmounted(() => {
             <!-- Selected area details -->
             <div v-else>
               <h5 class="mb-3">{{ selectedArea.nombre }}</h5>
-              
+
               <CListGroup flush>
                 <CListGroupItem>
                   <strong>ID:</strong> {{ selectedArea.id }}
                 </CListGroupItem>
                 <CListGroupItem>
-                  <strong>Descripción:</strong><br>
+                  <strong>Descripción:</strong><br />
                   {{ selectedArea.descripcion || 'Sin descripción' }}
                 </CListGroupItem>
                 <CListGroupItem>
-                  <strong>Tipo de Riesgo:</strong><br>
-                  <span 
+                  <strong>Tipo de Riesgo:</strong><br />
+                  <span
                     class="badge"
-                    :style="{ 
+                    :style="{
                       backgroundColor: riskColors[selectedArea.tipoRiesgo] || '#6B7280',
                       color: 'white',
                       padding: '0.5rem 1rem',
@@ -306,10 +333,61 @@ onUnmounted(() => {
             </div>
           </CCardBody>
         </CCard>
+
+        <!-- Card 2: Puntos inválidos (nuevo panel) -->
+        <CCard class="mb-4">
+          <CCardHeader>
+            <strong>Puntos inválidos</strong>
+          </CCardHeader>
+          <CCardBody>
+            <div v-if="loadingInvalidos" class="text-center my-3">
+              <CSpinner color="primary" size="sm" />
+              <p class="mt-2 mb-0">Cargando puntos inválidos...</p>
+            </div>
+
+            <div v-else-if="errorInvalidos" class="alert alert-warning mb-0">
+              {{ errorInvalidos }}
+            </div>
+
+            <div v-else>
+              <small class="text-muted">
+                Total: <strong>{{ invalidos.length }}</strong>
+              </small>
+
+              <div v-if="invalidos.length" class="mt-2">
+                <CListGroup flush>
+                  <CListGroupItem
+                    v-for="p in invalidos"
+                    :key="p.idpunto"
+                    class="py-2"
+                  >
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <div><strong>{{ p.nombre }}</strong></div>
+                        <small class="text-muted">{{ p.estado }}</small>
+                      </div>
+                      <span
+                        class="badge"
+                        style="background:#ef4444;color:white;border-radius:0.375rem;padding:0.25rem 0.5rem;"
+                      >
+                        !
+                      </span>
+                    </div>
+                  </CListGroupItem>
+                </CListGroup>
+              </div>
+
+              <div v-else class="text-muted mt-2">
+                No hay puntos inválidos 🎉
+              </div>
+            </div>
+          </CCardBody>
+        </CCard>
       </CCol>
     </CRow>
   </div>
 </template>
+
 
 <style scoped>
 .card-title {

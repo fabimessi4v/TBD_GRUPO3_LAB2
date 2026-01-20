@@ -130,11 +130,10 @@ SET geom = ST_SetSRID(
 WHERE Latitud IS NOT NULL
   AND Longitud IS NOT NULL;
 
-
 -- Zonas de riesgo
-
 INSERT INTO AreasAfectadas (Nombre, Descripcion, TipoRiesgo, geom)
-VALUES (
+VALUES
+(
   'Zona Riesgo Santiago',
   'Zona de riesgo climático en Santiago Centro',
   'Sequía',
@@ -147,8 +146,9 @@ VALUES (
       -70.75 -33.55
     ))',
     4326
-  ),
-  (
+  )
+),
+(
   'Zona Riesgo Incendio',
   'Área con alta vegetación seca',
   'Incendio',
@@ -193,4 +193,44 @@ VALUES (
     4326
   )
 );
+
+
+-- =====================================================
+-- PUNTOS DE MEDICIÓN INVÁLIDOS (para pruebas)
+-- =====================================================
+
+-- 1 Punto sin coordenadas ni geometría (geom = NULL)
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES (
+  'Sensor Invalido Sin Geom',
+  NULL,
+  NULL,
+  'Termómetro',
+  TRUE,
+  NULL
+);
+
+-- 2 Punto con coordenadas inválidas (0,0)
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES (
+  'Sensor Invalido 0 0',
+  0,
+  0,
+  'Sensor CO2',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(0, 0), 4326)
+);
+
+-- 3 Punto con geometría inválida (SRID incorrecto)
+INSERT INTO PuntosMedicion (Nombre, Latitud, Longitud, TipoSensor, Activo, geom)
+VALUES (
+  'Sensor Invalido SRID',
+  -33.45,
+  -70.66,
+  'Mareógrafo',
+  TRUE,
+  ST_SetSRID(ST_MakePoint(-70.66, -33.45), 0) 
+);
+
+
 	

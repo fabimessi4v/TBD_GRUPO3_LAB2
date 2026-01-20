@@ -1,6 +1,7 @@
 package Grupo3TBD.ClimateViewer.controllers;
 
 import Grupo3TBD.ClimateViewer.DTO.CorrelacionDTO;
+import Grupo3TBD.ClimateViewer.DTO.PuntoInvalidoDTO;
 import Grupo3TBD.ClimateViewer.DTO.PuntoMedicionDTO;
 import Grupo3TBD.ClimateViewer.DTO.PuntoUltimaMedicionDTO;
 import Grupo3TBD.ClimateViewer.entities.PuntoMedicion;
@@ -87,6 +88,12 @@ public class PuntoMedicionController {
         p.setActivo(dto.isActivo());
         p.setGeom(dto.getGeom());
         return p;
+    }
+
+
+    @GetMapping("/invalidos")
+    public List<PuntoInvalidoDTO> listarInvalidos() {
+        return puntoMedicionService.obtenerInvalidos();
     }
 
 

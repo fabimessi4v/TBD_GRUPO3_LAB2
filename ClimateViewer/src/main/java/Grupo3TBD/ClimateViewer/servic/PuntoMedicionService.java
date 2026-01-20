@@ -1,5 +1,6 @@
 package Grupo3TBD.ClimateViewer.servic;
 
+import Grupo3TBD.ClimateViewer.DTO.PuntoInvalidoDTO;
 import Grupo3TBD.ClimateViewer.DTO.PuntoMedicionDTO;
 import Grupo3TBD.ClimateViewer.entities.PuntoMedicion;
 import Grupo3TBD.ClimateViewer.repository.PuntoMedicionRepository;
@@ -14,6 +15,8 @@ public class PuntoMedicionService {
 
     @Autowired
     private PuntoMedicionRepository repository;
+    @Autowired
+    private PuntoMedicionRepository puntoMedicionRepository;
 
     // --- Listado paginado con filtro por nombre, retorna DTO ---
     public List<PuntoMedicionDTO> getPuntosPaginadosDTO(int page, int size, String nombreFiltro) {
@@ -60,6 +63,10 @@ public class PuntoMedicionService {
             throw new IllegalArgumentException("El ID no puede ser nulo");
         }
         repository.deleteById(id);
+    }
+
+    public List<PuntoInvalidoDTO> obtenerInvalidos() {
+        return puntoMedicionRepository.listarPuntosInvalidos();
     }
 
 }

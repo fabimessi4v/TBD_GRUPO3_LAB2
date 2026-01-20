@@ -1,6 +1,7 @@
 package Grupo3TBD.ClimateViewer.repository;
 
 import Grupo3TBD.ClimateViewer.DTO.CorrelacionDTO;
+import Grupo3TBD.ClimateViewer.DTO.PuntoInvalidoDTO;
 import Grupo3TBD.ClimateViewer.DTO.PuntoUltimaMedicionDTO;
 import Grupo3TBD.ClimateViewer.entities.PuntoMedicion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -167,6 +168,38 @@ public class PuntoMedicionRepository {
         dto.setUltimaMedicion(ts != null ? ts.toLocalDateTime() : null);
 
         return dto;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<PuntoInvalidoDTO> listarPuntosInvalidos() {
+
+        String sql = """
+            SELECT
+              idpunto,
+              nombre,
+              CASE
+                WHEN geom IS NULL THEN 'GEOMETRIA_NULL'
+                WHEN ST_X(geom)=0 AND ST_Y(geom)=0 THEN 'COORDENADAS_0_0'
+                WHEN NOT ST_IsValid(geom) THEN ST_IsValidReason(geom)
+                ELSE 'OK'
+              END AS estado
+            FROM puntosmedicion
+            WHERE geom IS NULL
+               OR (ST_X(geom)=0 AND ST_Y(geom)=0)
+               OR (geom IS NOT NULL AND NOT ST_IsValid(geom))
+            ORDER BY idpunto;
+        """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                new PuntoInvalidoDTO(
+                        rs.getInt("idpunto"),
+                        rs.getString("nombre"),
+                        rs.getString("estado")
+                )
+        );
     }
 
 
