@@ -16,64 +16,40 @@ public class InterpolarizacionRepository {
         this.jdbc = jdbc;
     }
 
-    private static final String SQL_SELECT_MV_PUNTOS_ALL = """
+    // mv_mediciones_nulas_interp
+    private static final String SQL_SELECT_MV_NULAS_SIMPLE = """
         SELECT
-          iddataset,
-          idpunto,
-          nombre,
-          tiposensor,
-          activo,
-          lon,
-          lat,
-          valor_real,
-          fechahora_real,
-          valor_estimado,
-          valor_final,
-          es_interpolado
-        FROM mv_puntos_valor
-        ORDER BY iddataset, idpunto;
-        """;
-
-    public List<Map<String, Object>> listarDesdeMV() {
-        return jdbc.queryForList(SQL_SELECT_MV_PUNTOS_ALL, new MapSqlParameterSource());
-    }
-
-    private static final String SQL_SELECT_MV_SIMPLE_ALL = """
-        SELECT
-          nombre         AS "nombre",
-          tiposensor     AS "sensor",
-          lon            AS "longitud",
-          lat            AS "latitud",
-          TRUNC(valor_final::numeric, 2) AS "valor",
+          nombre_punto  AS "nombre",
+          sensor        AS "sensor",
+          longitud      AS "longitud",
+          latitud       AS "latitud",
+          valor_final   AS "valor",
           es_interpolado AS "interpolacion"
-        FROM mv_puntos_valor
-        ORDER BY iddataset, idpunto;
+        FROM mv_mediciones_nulas_interp
+        ORDER BY iddataset, fechahora, idpunto;
         """;
 
-    public List<Map<String, Object>> listarTablaSimpleAll() {
-        return jdbc.queryForList(SQL_SELECT_MV_SIMPLE_ALL, new MapSqlParameterSource());
+    public List<Map<String, Object>> listarNulasParaFront() {
+        return jdbc.queryForList(SQL_SELECT_MV_NULAS_SIMPLE, new MapSqlParameterSource());
     }
 
+    // limpiar interpolacion
     private static final String SQL_SET_FLAG = """
         UPDATE app_flags
         SET interpolacion_activa = :activa
         WHERE id = 1;
         """;
 
-    private static final String SQL_REFRESH_ULTIMA = "REFRESH MATERIALIZED VIEW CONCURRENTLY mv_ultima_medicion;";
-    private static final String SQL_REFRESH_PUNTOS = "REFRESH MATERIALIZED VIEW CONCURRENTLY mv_puntos_valor;";
-
+    private static final String SQL_REFRESH_MV =
+            "REFRESH MATERIALIZED VIEW CONCURRENTLY mv_mediciones_nulas_interp;";
 
     public void aplicarInterpolacion() {
         jdbc.update(SQL_SET_FLAG, new MapSqlParameterSource().addValue("activa", true));
-        jdbc.getJdbcTemplate().execute(SQL_REFRESH_ULTIMA);
-        jdbc.getJdbcTemplate().execute(SQL_REFRESH_PUNTOS);
+        jdbc.getJdbcTemplate().execute(SQL_REFRESH_MV);
     }
 
     public void limpiarInterpolacion() {
         jdbc.update(SQL_SET_FLAG, new MapSqlParameterSource().addValue("activa", false));
-        jdbc.getJdbcTemplate().execute(SQL_REFRESH_ULTIMA);
-        jdbc.getJdbcTemplate().execute(SQL_REFRESH_PUNTOS);
+        jdbc.getJdbcTemplate().execute(SQL_REFRESH_MV);
     }
-
 }
