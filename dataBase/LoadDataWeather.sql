@@ -288,5 +288,67 @@ VALUES (
   TRUE,
   ST_SetSRID(ST_MakePoint(-70.66, -33.45), 0) 
 );
+-- 2 interpolacion
+-- caso con 3 valores
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 1, 22.10, '2026-01-21 08:00:00'),
+(4, 1, 23.30, '2026-01-21 08:00:00'),
+(5, 1, 21.80, '2026-01-21 08:00:00'),
+(2, 1, NULL,  '2026-01-21 08:00:00');
 
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 2, 410.00, '2026-01-21 09:00:00'),
+(4, 2, 415.00, '2026-01-21 09:00:00'),
+(5, 2, 405.00, '2026-01-21 09:00:00'),
+(2, 2, NULL,   '2026-01-21 09:00:00');
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 3, 0.25, '2026-01-21 10:00:00'),
+(4, 3, 0.28, '2026-01-21 10:00:00'),
+(5, 3, 0.26, '2026-01-21 10:00:00'),
+(2, 3, NULL, '2026-01-21 10:00:00');
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 1, 20.50, '2026-01-21 11:00:00'),
+(4, 1, 21.20, '2026-01-21 11:00:00'),
+(5, 1, 20.90, '2026-01-21 11:00:00'),
+(2, 1, NULL,  '2026-01-21 11:00:00');
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 2, 430.00, '2026-01-21 12:00:00'),
+(4, 2, 428.00, '2026-01-21 12:00:00'),
+(5, 2, 432.00, '2026-01-21 12:00:00'),
+(2, 2, NULL,   '2026-01-21 12:00:00');
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 3, 0.31, '2026-01-21 13:00:00'),
+(4, 3, 0.29, '2026-01-21 13:00:00'),
+(5, 3, 0.30, '2026-01-21 13:00:00'),
+(2, 3, NULL, '2026-01-21 13:00:00');
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 1, 24.10, '2026-01-21 14:00:00'),
+(4, 1, 24.60, '2026-01-21 14:00:00'),
+(5, 1, 23.90, '2026-01-21 14:00:00'),
+(2, 1, NULL,  '2026-01-21 14:00:00');
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 2, 399.00, '2026-01-21 15:00:00'),
+(4, 2, 402.00, '2026-01-21 15:00:00'),
+(5, 2, 401.00, '2026-01-21 15:00:00'),
+(2, 2, NULL,   '2026-01-21 15:00:00');
+
+-- casos donde no debe interpolar
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 2, 421.00, '2026-01-24 00:00:00'); -- vecino único (no cuenta como caso null)
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(4, 2, NULL,   '2026-01-24 00:00:00');
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(1, 1, 24.00, '2026-01-25 00:00:00'),
+(5, 1, 20.00, '2026-01-25 00:00:00');
+
+INSERT INTO mediciones (idpunto, iddataset, valor, fechahora) VALUES
+(2, 1, NULL,  '2026-01-25 00:00:00');
 	
