@@ -74,7 +74,7 @@ visualizador-datos-climaticos/
 
 ---
 
-## 🧠 Descripción general
+##  Descripción general
 
 El sistema se conecta a una base de datos PostgreSQL que almacena información de usuarios, datasets , puntos de medición y registros de observaciones.
 A través del frontend, los usuarios pueden visualizar los datos de manera interactiva y analizar las tendencias del cambio climático.
