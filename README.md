@@ -1,12 +1,12 @@
 
-# 🌎 Visualizador de Datos de Cambio Climático
+#  Visualizador de Datos de Cambio Climático
 
 Aplicación web desarrollada para la **visualización y análisis de datos climáticos** provenientes de distintas fuentes y estaciones de medición.  
 Permite explorar variables como temperatura, concentración de CO₂ y nivel del mar a lo largo del tiempo y en diferentes ubicaciones.
 
 ---
 
-## 🧱 Tecnologías utilizadas
+##  Tecnologías utilizadas
 
 - **Backend:** Spring Boot (Java)
 - **Frontend:** Vue.js
@@ -28,9 +28,9 @@ Se recomienda ejecutar los scripts de creación y poblamiento disponibles en el 
 
 ---
 
-## 🚀 Ejecución del proyecto
+##  Ejecución del proyecto
 
-### 1️⃣ Backend (Spring Boot)
+### 1️ Backend (Spring Boot)
 
 ```bash
 cd climateViewer
@@ -38,11 +38,11 @@ mvn spring-boot:run
 ````
 
 El servidor backend se ejecutará en:
-➡️ **[http://localhost:8080](http://localhost:8080)**
+ **[http://localhost:8080](http://localhost:8080)**
 
 ---
 
-### 2️⃣ Frontend (Vue.js)
+### 2 Frontend (Vue.js)
 
 ```bash
 cd frontend
@@ -52,11 +52,11 @@ npm run dev
 ```
 
 La aplicación frontend estará disponible en:
-➡️ **[http://localhost:3000](http://localhost:3000)**
+ **[http://localhost:3000](http://localhost:3000)**
 
 ---
 
-## 🧩 Estructura del proyecto
+##  Estructura del proyecto
 
 ```
 visualizador-datos-climaticos/
