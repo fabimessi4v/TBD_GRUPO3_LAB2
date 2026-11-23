@@ -15,7 +15,7 @@ Permite explorar variables como temperatura, concentración de CO₂ y nivel del
 
 ---
 
-## ⚙️ Configuración del entorno
+##  Configuración del entorno
 
 Antes de ejecutar la aplicación, asegúrate de contar con:
 
